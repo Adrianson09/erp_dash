@@ -8,7 +8,7 @@ function LoginForm({ onLogin }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const response = await fetch('http://localhost:3000/auth/login', {
                 method: 'POST',
@@ -17,34 +17,39 @@ function LoginForm({ onLogin }) {
                 },
                 body: JSON.stringify({ username, password }),
             });
-
+    
             const data = await response.json();
-
+    
+            console.log('Respuesta del servidor:', data);
+    
             if (response.ok) {
                 setMessage('Inicio de sesión exitoso');
                 setMessageType('success');
-                onLogin(data.token);  // Pasar el token y redirigir al Dashboard
-
+                onLogin(data.token);
+    
                 setTimeout(() => {
                     setMessage(null);
                 }, 3000);
             } else {
+                console.error('Error en las credenciales:', data.error);
                 setMessage('Error en las credenciales: ' + data.error);
                 setMessageType('error');
-
+    
                 setTimeout(() => {
                     setMessage(null);
                 }, 3000);
             }
         } catch (error) {
+            console.error('Error en la conexión con el servidor:', error.message);
             setMessage('Error en la conexión con el servidor');
             setMessageType('error');
-
+    
             setTimeout(() => {
                 setMessage(null);
             }, 3000);
         }
     };
+    
 
     return (
         <div className="w-full max-w-md mx-auto">
@@ -58,10 +63,11 @@ function LoginForm({ onLogin }) {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="bg-white p-6 shadow-lg rounded-lg">
-                <h2 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
+            <form onSubmit={handleSubmit} className="bg-[#00000086]  p-20  shadow-lg rounded-lg">
+                <h2 className="text-2xl font-bold mb-6 text-center"></h2>
+                <img src="/logo.png" alt="Logo" className="h-20  mx-auto" />
                 <div className="mb-4">
-                    <label className="block mb-2 text-sm font-medium text-gray-700">Usuario</label>
+                    <label className="block mb-2 text-sm font-medium text-gray-100">Usuario</label>
                     <input
                         type="text"
                         value={username}
@@ -69,10 +75,11 @@ function LoginForm({ onLogin }) {
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Ingresa tu usuario de dominio"
                         required
+                        autoComplete="username"
                     />
                 </div>
                 <div className="mb-4">
-                    <label className="block mb-2 text-sm font-medium text-gray-700">Contraseña</label>
+                    <label className="block mb-2 text-sm font-medium text-gray-100">Contraseña</label>
                     <input
                         type="password"
                         value={password}
@@ -80,11 +87,12 @@ function LoginForm({ onLogin }) {
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Ingresa tu contraseña"
                         required
+                        autoComplete="current-password"
                     />
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-lime-600 transition-colors"
+                    className="w-32 pt-2 pb-2 mt-4 bg-lime-700  text-white p-2 rounded-lg hover:bg-lime-800 transition-colors"
                 >
                     Iniciar Sesión
                 </button>

@@ -1,13 +1,16 @@
 {
   "name": "ticket",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sistema de autenticación y gestión de órdenes con Active Directory y SQL Server.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["auth", "active-directory", "sql-server", "express"],
+  "author": "Tu Nombre",
   "license": "ISC",
   "dependencies": {
     "activedirectory2": "^2.2.0",
@@ -15,6 +18,13 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "mssql": "^9.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "eslint": "^8.48.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-node": "^11.1.0"
   }
 }
