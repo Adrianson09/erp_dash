@@ -10,8 +10,8 @@ function DashboardLayout({ onLogout }) {
                     <img src="/logo.png" alt="Logo" className="h-20 mr-4" />
                     <nav className="space-x-4">
                         <Link to="/dashboard/replicas" className="hover:text-gray-300">Replicas</Link>
-                        <Link to="/dashboard/nuevo-ticket" className="hover:text-gray-300">Nuevo Ticket</Link>
-                        <Link to="/dashboard/reportes" className="hover:text-gray-300">Reportes</Link>
+                        {/* <Link to="/dashboard/nuevo-ticket" className="hover:text-gray-300">Nuevo Ticket</Link>
+                        <Link to="/dashboard/reportes" className="hover:text-gray-300">Reportes</Link> */}
                         <Link to="/dashboard/ordenes" className="hover:text-gray-300">Ordenes</Link>
                     </nav>
                 </div>

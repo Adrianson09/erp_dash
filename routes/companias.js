@@ -14,7 +14,8 @@ router.get('/companias', async (req, res) => {
         conjunto, 
         nombre, 
         nit, 
-        telefono
+        telefono,
+        EMAIL_DOC_ELECTRONICO
       FROM ERPADMIN.CONJUNTO
     `);
 

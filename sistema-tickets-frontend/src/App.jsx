@@ -38,8 +38,8 @@ function App() {
         {token && (
           <Route path="/dashboard" element={<DashboardLayout onLogout={handleLogout} />}>
             <Route path="replicas" element={<Replicas />} />
-            <Route path="nuevo-ticket" element={<NuevoTicket />} />
-            <Route path="reportes" element={<Reportes />} />
+            {/* <Route path="nuevo-ticket" element={<NuevoTicket />} />
+            <Route path="reportes" element={<Reportes />} /> */}
             <Route path="ordenes" element={<Ordenes />} />
             <Route path="ordenes/:company/:id" element={<OrderDetails />} />
           </Route>

@@ -19,14 +19,16 @@ router.get('/ordenes', async (req, res) => {
     const result = await pool.request().query(`
         SELECT 
           oco.ORDEN_COMPRA,
+          oco.PROVEEDOR,
           pro.NOMBRE AS NOMBRE_PROVEEDOR,
           oco.MONEDA,
           oco.TOTAL_MERCADERIA,
+          oco.ESTADO,
           oco.FECHA
         FROM ${compania}.ORDEN_COMPRA oco
         LEFT JOIN ${compania}.PROVEEDOR pro ON pro.PROVEEDOR = oco.PROVEEDOR
-        WHERE oco.ESTADO = 'E'
-        ORDER BY oco.FECHA DESC
+       
+        ORDER BY oco.ORDEN_COMPRA
     `);
 
     // Validar si no hay resultados

@@ -7,7 +7,7 @@ function Replicas() {
         <div>
             <h1 className="text-center text-2xl font-bold mx-auto my-4">Replicas</h1>
             {/* Aquí iría el contenido de la página de tickets */}
-            <div className="flex justify-between w-1/2 mx-auto my-8">
+            <div className="grid grid-cols-2 gap-4 w-1/2 mx-auto my-8">
 
                 <ProviderReplicationForm/>
                 <ClientReplicationForm/>

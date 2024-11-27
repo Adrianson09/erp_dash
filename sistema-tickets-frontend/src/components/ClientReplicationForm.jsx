@@ -130,7 +130,7 @@ export const ClientReplicationForm = () => {
           type="submit"
           className="w-full py-2 px-4 bg-[#6AAB33] hover:bg-lime-600 text-white font-semibold rounded"
         >
-          Ejecutar replicación de cliente
+          Ejecutar replicación
         </button>
       </form>
     </div>
