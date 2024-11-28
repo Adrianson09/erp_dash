@@ -50,6 +50,14 @@ export const OrderDetails = () => {
 
   const estadoInfo = estadoMapping[orderDetails.estado] || { text: "DESCONOCIDO", color: "text-gray-600" };
 
+  const handlePrint = () => {
+    const originalContent = document.body.innerHTML;
+    const printContent = document.querySelector(".print-only").outerHTML;
+
+    document.body.innerHTML = printContent;
+    window.print();
+    document.body.innerHTML = originalContent;
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen p-8 font-sans">
@@ -62,7 +70,7 @@ export const OrderDetails = () => {
           Regresar
         </button>
         <button
-          onClick={() => window.print()}
+          onClick={handlePrint}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Imprimir
@@ -70,7 +78,7 @@ export const OrderDetails = () => {
       </div>
 
       {/* Contenedor Principal */}
-      <div className="bg-white shadow-md p-8 mx-auto max-w-4xl">
+      <div className="print-only bg-white shadow-md p-8 mx-auto max-w-4xl">
         {/* Encabezado */}
             <img src="/logo.jpg" alt="Caribe Hospitality" className="h-40 mb-2 mx-auto" />
         <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md mb-6">
@@ -79,7 +87,7 @@ export const OrderDetails = () => {
             <p className="text-sm">Avenida Escazú</p>
             <p className="text-sm">Teléfono: {companyDetails.telefono}</p>
             <p className="text-sm">NIT: {companyDetails.nit}</p>
-            <p className="text-sm">Correo Electrónico: {companyDetails.EMAIL_DOC_ELECTRONICO || 'ND'}</p>
+            <p className="text-sm">Correo Electrónico: {companyDetails.EMAIL_DOC_ELECTRONICO || 'facturacion@caribehospitality.com'}</p>
           </div>
           <div className="text-right">
             <p className="text-lg font-bold">ORDEN DE COMPRA</p>
@@ -148,13 +156,13 @@ export const OrderDetails = () => {
                 <td className="border border-gray-300 p-2 text-center">{line.fase}</td>
                 <td className="border border-gray-300 p-2 text-center">{line.proyecto}</td>
                 <td className="border border-gray-300 p-2 text-right">
-                  ${line.precio_unitario.toFixed(2)}
+                  {line.precio_unitario.toLocaleString("en-US")}
                 </td>
                 <td className="border border-gray-300 p-2 text-right">
-                  ${line.descuento_linea.toFixed(2)}
+                  {line.descuento_linea.toLocaleString("en-US")}
                 </td>
                 <td className="border border-gray-300 p-2 text-right">
-                  ${(line.cantidad_ordenada * line.precio_unitario).toFixed(2)}
+                  {(line.cantidad_ordenada * line.precio_unitario).toLocaleString("en-US")}
                 </td>
               </tr>
             ))}
@@ -164,37 +172,87 @@ export const OrderDetails = () => {
         {/* Totales */}
         <div className="text-right mb-6">
           <p className="text-lg">
-            <strong>Total Mercadería:</strong> $
-            {orderDetails.total_mercaderia.toFixed(2)}
+            <strong>Total Mercadería: </strong>  
+            {orderDetails.total_mercaderia.toLocaleString("en-US")}
           </p>
           <p className="text-lg">
-            <strong>Impuestos:</strong> ${orderDetails.total_impuesto1.toFixed(2)}
+            <strong>Impuestos: </strong> {orderDetails.total_impuesto1.toLocaleString("en-US")}
+          </p>
+          <p className="text-lg">
+            <strong>Descuento: </strong> {orderDetails.descuento_total.toLocaleString("en-US")}
           </p>
           <p className="text-lg font-bold">
-            <strong>Total:</strong> $
+            <strong>Total: </strong> 
             {(
               orderDetails.total_mercaderia + orderDetails.total_impuesto1
-            ).toFixed(2)}
+            ).toLocaleString("en-US")}
           </p>
         </div>
 
         {/* Firmas */}
-        <div>
-          <p className="mb-2">
-            <strong>Aprobado por:</strong>
+     
+
+
+
+<div>
+  <p className="mb-2">
+    <strong>Aprobado por:</strong>
+  </p>
+  <div className="grid grid-cols-2 gap-6">
+    {/* Renderizar aprobadores */}
+    {orderDetails.aprobadores.map((aprobador, index) => {
+      // Mapeo de usuarios a nombres completos
+      const nombres = {
+        JSUCRE: "Jesús Sucre",
+        DCAMPOS: "Daniel Campos",
+        JQUESADA: "Juan Pablo Quesada",
+        BLOPEZ: "Bernabé López",
+        JBADILLA: "Johanna Badilla",
+      };
+
+      return (
+        <div
+          key={aprobador.rowPointer}
+          className="text-center align-middle justify-center my-auto border p-16 rounded shadow-md bg-gray-100"
+        >
+          {/* Mostrar nombre completo o el usuario si no está en el mapeo */}
+          <p className="font-bold">{nombres[aprobador.usuario] || aprobador.usuario}</p>
+          <p className="text-sm">
+            <em>{aprobador.rowPointer}</em>
           </p>
-          <div className="grid grid-cols-2 gap-6">
-            {orderDetails.aprobadores.map((aprobador) => (
-              <div key={aprobador.rowPointer} className="text-center">
-                {/* <p>________________________</p> */}
-                <p className="font-bold">{aprobador.usuario}</p>
-                <p className="text-sm">
-                  RowPointer: <em>{aprobador.rowPointer}</em>
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
+      );
+    })}
+
+    {/* Condición para Dirección General */}
+    {orderDetails.departamento === "DG" ? (
+      <>
+        {/* Agregar firma para usuario DCAMPOS */}
+        
+      </>
+    ) : (
+      <>
+        {/* Mostrar sello de no requiere firma de DG */}
+        <div className="text-center align-middle my-auto border p-16 rounded shadow-md bg-gray-100">
+          <p className="font-bold border-spacing-8 border-solid border-gray-900 border-2 text-gray-800">
+            No requiere firma de Dirección General
+          </p>
+        </div>
+      </>
+    )}
+
+    {/* Firma del proveedor */}
+    <div className="text-center border rounded shadow-md bg-gray-100">
+      <p className="pt-20">________________________</p>
+      <p className="font-bold">Proveedor</p>
+      <p className="text-sm text-gray-600">Firma</p>
+    </div>
+  </div>
+</div>
+
+
+{/*  */}
+
       </div>
     </div>
   );

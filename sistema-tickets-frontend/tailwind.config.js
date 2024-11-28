@@ -5,7 +5,18 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      // Extensiones del tema
+    },
+  },
+  variants: {
+    extend: {
+      display: ["print"],
+      visibility: ["print"],
+      border: ["print"],
+      textColor: ["print"],
+      backgroundColor: ["print"],
+    },
   },
   plugins: [],
 };
