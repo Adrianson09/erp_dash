@@ -38,6 +38,7 @@ router.get('/ordenes/:compania/:orden_compra', async (req, res) => {
           lin.MONTO_DESCUENTO AS descuento_linea,
           lin.FASE,
           lin.PROYECTO,
+          pry.descripcion as NOMBRE_PROYECTO,
           oco.TOTAL_MERCADERIA,
           oco.MONTO_DESCUENTO AS descuento_total,
           oco.MONTO_FLETE,
@@ -58,6 +59,7 @@ router.get('/ordenes/:compania/:orden_compra', async (req, res) => {
         LEFT JOIN ${compania}.PROVEEDOR pro ON oco.proveedor = pro.proveedor
         LEFT JOIN ${compania}.ORDEN_COMPRA_LINEA lin ON oco.orden_compra = lin.orden_compra
         LEFT JOIN ${compania}.USUARIOS_APROB_OC apr ON apr.orden_compra = oco.orden_compra
+        left join ${compania}.PROYECTO_PY pry on pry.CENTRO_COSTO = lin.PROYECTO
         WHERE oco.orden_compra = @orden_compra
       `);
 
@@ -94,6 +96,7 @@ router.get('/ordenes/:compania/:orden_compra', async (req, res) => {
             descuento_linea: row.descuento_linea,
             fase: row.FASE,
             proyecto: row.PROYECTO,
+            NOMBRE_PROYECTO: row.NOMBRE_PROYECTO,
             centro_costo: row.CENTRO_COSTO,
             cuenta_contable: row.CUENTA_CONTABLE,
           }])

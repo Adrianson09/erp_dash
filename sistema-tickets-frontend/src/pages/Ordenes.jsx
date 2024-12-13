@@ -100,7 +100,7 @@ export const Ordenes = () => {
           className="p-2 border rounded-md w-full"
           onChange={(e) => handleCompanyChange(e.target.value)}
         >
-          <option value="">Selecciona...</option>
+          <option value={selectedCompany}>Selecciona...</option>
           {companies.map((company) => (
             <option key={company.conjunto} value={company.conjunto}>
               {company.conjunto}
