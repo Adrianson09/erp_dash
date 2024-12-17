@@ -124,6 +124,60 @@ router.post('/replicar', async (req, res) => {
       return res.status(400).json({ error: 'El cliente ya existe en la compañía destino' });
     }
 
+  // 2. Obtener el NIT (contribuyente) asociado al cliente desde el origen
+  const contribuyenteQuery = `
+  SELECT contribuyente
+  FROM ${origen}.cliente
+  WHERE cliente = @cliente
+`;
+const contribuyenteResult = await pool.request()
+  .input('cliente', sql.VarChar, cliente)
+  .query(contribuyenteQuery);
+
+if (contribuyenteResult.recordset.length === 0) {
+  return res.status(404).json({ error: 'Cliente no encontrado en la base origen.' });
+}
+const contribuyente = contribuyenteResult.recordset[0].contribuyente;
+
+// 3. Verificar si el NIT ya existe en la compañía destino
+const nitQuery = `
+  SELECT NIT
+  FROM ${destino}.nit
+  WHERE NIT = @contribuyente
+`;
+const nitResult = await pool.request()
+  .input('contribuyente', sql.VarChar, contribuyente)
+  .query(nitQuery);
+
+// 4. Insertar el NIT si no existe
+if (nitResult.recordset.length === 0) {
+  const insertNitQuery = `
+    INSERT INTO ${destino}.nit (NIT, RAZON_SOCIAL, ALIAS, NOTAS, TIPO)
+    SELECT NIT, RAZON_SOCIAL, ALIAS, NOTAS, TIPO
+    FROM ${origen}.nit
+    WHERE NIT = @contribuyente;
+  `;
+  await pool.request()
+    .input('contribuyente', sql.VarChar, contribuyente)
+    .query(insertNitQuery);
+  console.log(`NIT ${contribuyente} replicado en la compañía ${destino}.`);
+}
+
+// 5. Verificar si el cliente ya existe en la compañía destino
+const checkClienteQuery = `
+  SELECT cliente
+  FROM ${destino}.cliente
+  WHERE cliente = @cliente
+`;
+const checkClienteResult = await pool.request()
+  .input('cliente', sql.VarChar, cliente)
+  .query(checkClienteQuery);
+
+if (checkClienteResult.recordset.length > 0) {
+  return res.status(400).json({ error: 'El cliente ya existe en la compañía destino.' });
+}
+
+
     // Replicar cliente desde la compañía origen a la destino
     const replicateQuery = `
       INSERT INTO ${destino}.cliente (cliente, nombre, alias, contacto, cargo,direccion, dir_emb_default,telefono1, telefono2, fax, contribuyente, fecha_ingreso,MULTIMONEDA, moneda, saldo, saldo_local,

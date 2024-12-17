@@ -26,5 +26,8 @@
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-node": "^11.1.0"
-  }
+  },
+  "overrides": {
+  "punycode": "^2.3.1"
+}
 }

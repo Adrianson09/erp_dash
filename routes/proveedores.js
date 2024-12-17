@@ -97,7 +97,6 @@ router.post('/insertar', async (req, res) => {
     res.status(500).send('Error al insertar proveedor');
   }
 });
-
 // Replicar un proveedor entre compañías
 router.post('/replicar', async (req, res) => {
   const { origen, destino, proveedor } = req.body;
@@ -109,7 +108,53 @@ router.post('/replicar', async (req, res) => {
   try {
     const pool = await poolPromise;
 
-    // Verificar si el proveedor ya existe en la compañía destino
+    // 1. Obtener el contribuyente (NIT) asociado al proveedor desde la base origen
+    const contribuyenteQuery = `
+      SELECT contribuyente
+      FROM ${origen}.proveedor
+      WHERE proveedor = @proveedor
+    `;
+    const contribuyenteResult = await pool.request()
+      .input('proveedor', sql.VarChar, proveedor)
+      .query(contribuyenteQuery);
+
+    if (contribuyenteResult.recordset.length === 0) {
+      return res.status(404).json({ error: 'Proveedor no encontrado en la base origen.' });
+    }
+
+    const contribuyente = contribuyenteResult.recordset[0].contribuyente;
+
+    // 2. Verificar si el NIT ya existe en la compañía destino
+    const nitQuery = `
+      SELECT NIT
+      FROM ${destino}.nit
+      WHERE NIT = @contribuyente
+    `;
+    const nitResult = await pool.request()
+      .input('contribuyente', sql.VarChar, contribuyente)
+      .query(nitQuery);
+
+    // 3. Insertar el NIT si no existe
+    if (nitResult.recordset.length === 0) {
+      const insertNitQuery = `
+        INSERT INTO ${destino}.nit (
+          NIT, RAZON_SOCIAL, ALIAS, NOTAS, TIPO, USA_REPORTE_D151, ORIGEN, NUMERO_DOC_NIT, 
+          SUCURSAL, EXTERIOR, DIRECCION, NATURALEZA, ACTIVO
+        )
+        SELECT NIT, RAZON_SOCIAL, ALIAS, NOTAS, TIPO, USA_REPORTE_D151, ORIGEN, NUMERO_DOC_NIT, 
+          SUCURSAL, EXTERIOR, DIRECCION, NATURALEZA, ACTIVO
+        FROM ${origen}.nit
+        WHERE NIT = @contribuyente
+      `;
+      await pool.request()
+        .input('contribuyente', sql.VarChar, contribuyente)
+        .query(insertNitQuery);
+      console.log(`NIT ${contribuyente} replicado en la compañía ${destino}.`);
+    } else {
+      console.log(`NIT ${contribuyente} ya existe en la compañía ${destino}.`);
+    }
+
+    // 4. Verificar si el proveedor ya existe en la compañía destino
     const checkQuery = `
       SELECT proveedor 
       FROM ${destino}.proveedor 
@@ -120,37 +165,40 @@ router.post('/replicar', async (req, res) => {
       .query(checkQuery);
 
     if (checkResult.recordset.length > 0) {
-      return res.status(400).json({ error: 'El proveedor ya existe en la compañía destino' });
+      return res.status(400).json({ error: 'El proveedor ya existe en la compañía destino.' });
     }
 
-    // Replicar proveedor desde la compañía origen a la destino
+    // 5. Replicar proveedor desde origen a destino
     const replicateQuery = `
       INSERT INTO ${destino}.proveedor (
-        PROVEEDOR,	NOMBRE,	ALIAS,	CONTACTO,	CARGO,	DIRECCION,	E_MAIL,	FECHA_INGRESO,	FECHA_ULT_MOV,	TELEFONO1,	
-TELEFONO2,	FAX,	ORDEN_MINIMA,	DESCUENTO,	TASA_INTERES_MORA,	LOCAL,	CONGELADO,	
-CONTRIBUYENTE,	CONDICION_PAGO,	MONEDA,	PAIS,	CATEGORIA_PROVEED,	MULTIMONEDA,	SALDO,	
-SALDO_LOCAL,	SALDO_DOLAR,	NOTAS,	ACTIVO,	AUTORETENEDOR,	SALDO_TRANS,	SALDO_TRANS_LOCAL,	
-SALDO_TRANS_DOLAR,	PERMITE_DOC_GP,	PARTICIPA_FLUJOCAJA,	USUARIO_CREACION,	FECHA_HORA_CREACION,
-	IMPUESTO1_INCLUIDO,	ACEPTA_DOC_ELECTRONICO,	INTERNACIONES, usa_plame
+        PROVEEDOR, NOMBRE, ALIAS, CONTACTO, CARGO, DIRECCION, E_MAIL, FECHA_INGRESO, 
+        FECHA_ULT_MOV, TELEFONO1, TELEFONO2, FAX, ORDEN_MINIMA, DESCUENTO, TASA_INTERES_MORA, 
+        LOCAL, CONGELADO, CONTRIBUYENTE, CONDICION_PAGO, MONEDA, PAIS, CATEGORIA_PROVEED, 
+        MULTIMONEDA, SALDO, SALDO_LOCAL, SALDO_DOLAR, NOTAS, ACTIVO, AUTORETENEDOR, 
+        SALDO_TRANS, SALDO_TRANS_LOCAL, SALDO_TRANS_DOLAR, PERMITE_DOC_GP, PARTICIPA_FLUJOCAJA, 
+        USUARIO_CREACION, FECHA_HORA_CREACION, IMPUESTO1_INCLUIDO, ACEPTA_DOC_ELECTRONICO, 
+        INTERNACIONES, usa_plame
       )
       SELECT 
-        PROVEEDOR,	NOMBRE,	ALIAS,	CONTACTO,	CARGO,	DIRECCION,	E_MAIL,	FECHA_INGRESO,	FECHA_ULT_MOV,	TELEFONO1,	
-TELEFONO2,	FAX,	ORDEN_MINIMA,	DESCUENTO,	TASA_INTERES_MORA,	LOCAL,	CONGELADO,	
-CONTRIBUYENTE,	CONDICION_PAGO,	MONEDA,	PAIS,	CATEGORIA_PROVEED,	MULTIMONEDA,	SALDO,	
-SALDO_LOCAL,	SALDO_DOLAR,	NOTAS,	ACTIVO,	AUTORETENEDOR,	SALDO_TRANS,	SALDO_TRANS_LOCAL,	
-SALDO_TRANS_DOLAR,	PERMITE_DOC_GP,	PARTICIPA_FLUJOCAJA,	USUARIO_CREACION,	FECHA_HORA_CREACION,
-	IMPUESTO1_INCLUIDO,	ACEPTA_DOC_ELECTRONICO,	INTERNACIONES, usa_plame
-      FROM ${origen}.proveedor 
+        PROVEEDOR, NOMBRE, ALIAS, CONTACTO, CARGO, DIRECCION, E_MAIL, FECHA_INGRESO, 
+        FECHA_ULT_MOV, TELEFONO1, TELEFONO2, FAX, ORDEN_MINIMA, DESCUENTO, TASA_INTERES_MORA, 
+        LOCAL, CONGELADO, CONTRIBUYENTE, CONDICION_PAGO, MONEDA, PAIS, CATEGORIA_PROVEED, 
+        MULTIMONEDA, SALDO, SALDO_LOCAL, SALDO_DOLAR, NOTAS, ACTIVO, AUTORETENEDOR, 
+        SALDO_TRANS, SALDO_TRANS_LOCAL, SALDO_TRANS_DOLAR, PERMITE_DOC_GP, PARTICIPA_FLUJOCAJA, 
+        USUARIO_CREACION, FECHA_HORA_CREACION, IMPUESTO1_INCLUIDO, ACEPTA_DOC_ELECTRONICO, 
+        INTERNACIONES, usa_plame
+      FROM ${origen}.proveedor
       WHERE proveedor = @proveedor
     `;
     await pool.request()
       .input('proveedor', sql.VarChar, proveedor)
       .query(replicateQuery);
 
-    res.status(200).send('Proveedor replicado correctamente');
+    console.log(`Proveedor ${proveedor} replicado correctamente.`);
+    res.status(200).json({ message: 'Proveedor replicado correctamente.' });
   } catch (err) {
     console.error('Error al replicar proveedor:', err);
-    res.status(500).send('Error al replicar proveedor');
+    res.status(500).json({ error: `Error interno: ${err.message}` });
   }
 });
 

@@ -6,8 +6,11 @@ const config = {
   url: process.env.LDAP_URL,
   baseDN: process.env.LDAP_BASE_DN,
   username: process.env.LDAP_ADMIN_USER,
-  password: process.env.LDAP_ADMIN_PASS,
+  password: process.env.LDAP_ADMIN_PASS,  
+  
 };
+
+
 
 // Validar configuración del LDAP
 if (!config.url || !config.baseDN || !config.username || !config.password) {
@@ -15,7 +18,13 @@ if (!config.url || !config.baseDN || !config.username || !config.password) {
   throw new Error('No se puede configurar Active Directory debido a parámetros faltantes.');
 }
 
+
+
 const ad = new ActiveDirectory(config);
+
+
+
+
 
 console.log('Configuración de Active Directory cargada correctamente');
 
