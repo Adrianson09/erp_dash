@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  @media print {
+    /* Elimina el margen y el padding extra */
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body * {
+      visibility: hidden;
+    }
+    .print-only,
+    .print-only * {
+      visibility: visible;
+    }
+    /* Configura los márgenes de la página */
+    @page {
+      margin: 1cm; /* Margen general */
+    }
+
+    /* Fuerza saltos de página */
+    .page-break {
+      page-break-before: always; /* Inserta salto antes del elemento */
+    }
+
+    .page-break-after {
+      page-break-after: always; /* Inserta salto después del elemento */
+    }
+
+    .avoid-page-break {
+      page-break-inside: avoid; /* Evita saltos dentro de un elemento */
+    }
+
+    /* Elimina el espacio en blanco de la primera página */
+    .no-margin-first-page {
+      margin-top: 0 !important;
+    }
+
+    /* Asegura que el contenedor principal ocupe el ancho completo */
+    .print-container {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  }
+}

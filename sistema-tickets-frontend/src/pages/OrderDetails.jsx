@@ -59,6 +59,11 @@ export const OrderDetails = () => {
     document.body.innerHTML = originalContent;
   };
 
+  // const handlePrint = () => {
+  //   window.print();
+  // };
+  
+
   const nombreProyectoUnico = orderDetails.lineas.length > 0 
   ? orderDetails.lineas[0].NOMBRE_PROYECTO 
   : "Sin proyecto";
@@ -86,10 +91,10 @@ export const OrderDetails = () => {
       </div>
 
       {/* Contenedor Principal */}
-      <div className="print-only bg-white shadow-md p-8 mx-auto max-w-4xl">
+      <div className="print-only print-container no-margin-first-page bg-white shadow-md p-8 mx-auto max-w-4xl">
         {/* Encabezado */}
             <img src="/logo.jpg" alt="Caribe Hospitality" className="h-40 mb-2 mx-auto" />
-        <header className="flex justify-between items-center bg-gray-100 p-4 rounded-md mb-6">
+        <header className=" flex justify-between items-center bg-gray-100 p-4 rounded-md mb-6">
           <div>
             <p className="text-sm font-bold">{companyDetails.nombre}</p>
             <p className="text-sm">Avenida Escazú</p>
@@ -105,6 +110,8 @@ export const OrderDetails = () => {
                               
           </div>
         </header>
+
+
 
         {/* Información General */}
         <div className="border-t border-b border-gray-300 py-4 mb-6">
@@ -202,11 +209,11 @@ export const OrderDetails = () => {
 
 
 {/* Condiciones */}
-<section classname="bg-gray-100 text-sm font-sans">
-  <div classname="max-w-4xl text-sm mx-auto p-8 bg-white shadow-md">
-    <h1 classname="text-sm font-bold mb-6"><strong>Cláusulas para Subcontratación</strong></h1>
+{/* <section className="bg-gray-100 text-sm font-sans page-break">
+  <div className="max-w-4xl text-sm mx-auto p-8 bg-white shadow-md">
+    <h1 className="text-sm font-bold mb-6"><strong>Cláusulas para Subcontratación</strong></h1>
 
-    <h2 classname="text-sm font-semibold mt-4 mb-2"><strong>A. Definiciones</strong></h2>
+    <h2 className="text-sm font-semibold mt-4 mb-2"><strong>A. Definiciones</strong></h2>
     <p className="text-sm"><strong>CONTRATO:</strong> Formado por la ORDEN DE COMPRA, OFERTA FINAL, el presente documento “CLAUSULAS PARA SUBCONTRATACIÓN” y sus respectivos ANEXOS.</p>
     <p className="text-sm"><strong>CONTRATANTE:</strong> La empresa que figura en el encabezado de la ORDEN DE COMPRA.</p>
     <p className="text-sm"><strong>CONTRATISTA o PROVEEDOR:</strong> La persona física o jurídica que figura como “Proveedor” en la ORDEN DE COMPRA.</p>
@@ -215,8 +222,8 @@ export const OrderDetails = () => {
     <p className="text-sm"><strong>OBRA:</strong> Se refiere al sitio físico en el que se debe realizar el TRABAJO objeto de este contrato.</p>
     <p className="text-sm"><strong>COLABORADORES:</strong> Hace referencia a los empleados, dependientes u otros, que el CONTRATISTA requiera para realizar el TRABAJO objeto de este contrato.</p>
 
-    <h2 classname="text-sm font-semibold mt-4 mb-2">B. Cláusulas Proveedor de Servicios</h2>
-    <ol classname="list-decimal pl-6">
+    <h2 className="text-sm font-semibold mt-4 mb-2">B. Cláusulas Proveedor de Servicios</h2>
+    <ol className="list-decimal pl-6">
       <li className="text-sm">EL CONTRATISTA expresa conocer el alcance de su TRABAJO, así como las condiciones de la obra, y en general toda la información necesaria en relación con las actividades a realizar. De igual forma, poseer los recursos, conocimientos técnicos y los COLABORADORES necesarios para la adecuada ejecución de los trabajos.</li>
       <li className="text-sm">El CONTRATISTA al aceptar el presente CONTRATO se compromete de forma ineludible a cumplir en todo momento con las disposiciones vigentes, del país donde se encuentre la obra, en materia laboral, de seguridad social y seguridad ocupacional. Así como cumplir con los requisitos de sostenibilidad con los que cuenta el CONTRATANTE, mismos que pueden encontrar en el ANEXO 1 “formulario cumplimiento de contratos”.</li>
       <li className="text-sm">La fecha de inicio, así como el plazo para la realización de los trabajos, será la estipulada en la ORDEN DE COMPRA o con cualquier otra fecha definida por escrito de mutuo acuerdo entre las partes y en consecuencia la de finalización de estos. Las penalidades para el CONTRATISTA asociadas a un incumplimiento en estas fechas serán de hasta $5000 diarios, según sea la afectación a la Operación del Hotel, hasta un tope de 10% del valor de contrato.</li>
@@ -228,8 +235,8 @@ export const OrderDetails = () => {
       <li className="text-sm">El CONTRATANTE podrá pausar la obra al finalizar un nivel y comenzar el siguiente por un máximo de 30 días naturales, esto debido a altas ocupaciones del hotel.</li>
     </ol>
 
-    <h2 classname="text-sm font-semibold mt-4 mb-2">C. Cláusulas Proveedor de Productos</h2>
-    <ol classname="list-decimal pl-6">
+    <h2 className="text-sm font-semibold mt-4 mb-2">C. Cláusulas Proveedor de Productos</h2>
+    <ol className="list-decimal pl-6">
       <li className="text-sm">Queda estrictamente prohibido para el PROVEEDOR utilizar o emplear en la fabricación y/o manufactura del PRODUCTO piezas, refacciones o elementos que lo integren, los cuales se encuentren en mal estado, usados, reconstruidos, restaurados, adaptados o modificados.</li>
       <li className="text-sm">El PROVEEDOR se compromete a cumplir con los plazos de entrega definidos en la ORDEN DE COMPRA o con cualquier otra fecha definida por escrito de mutuo acuerdo entre las partes, comprendiendo que el no acatamiento significará una multa correspondiente de hasta $5000 dólares americanos diarios, según la afectación a la Operación del Hotel, por cada día de atraso, hasta un tope del 10% del valor contratado.</li>
       <li className="text-sm">El PROVEEDOR se compromete a entregar el PRODUCTO, justo en el lugar de destino indicado en la ORDEN DE COMPRA.</li>
@@ -237,24 +244,24 @@ export const OrderDetails = () => {
       
     </ol>
 
-    <h2 classname="text-sm font-semibold mt-4 mb-2">D. Fuerza Mayor</h2>
+    <h2 className="text-sm font-semibold mt-4 mb-2">D. Fuerza Mayor</h2>
     <p className="text-sm">Si en algún momento dentro de la vigencia del presente Contrato, el cumplimiento del PROVEEDOR, ya sea total o parcial de sus obligaciones, se vea retrasado por razones de acciones gubernamentales, guerra...</p>
 
-    <h2 classname="text-sm font-semibold mt-4 mb-2">E. Facturación</h2>
+    <h2 className="text-sm font-semibold mt-4 mb-2">E. Facturación</h2>
     <p>Para toda contratación, que dentro de su desarrollo conlleve pagos parciales asociados al avance de los TRABAJOS o entregas parciales de los PRODUCTOS, es requisito indispensable la presentación de una Tabla de Pagos contra la facturación...</p>
 
-    <h2 classname="text-sm font-semibold mt-4 mb-2">Formulario de Cumplimiento de Contratos</h2>
+    <h2 className="text-sm font-semibold mt-4 mb-2">Formulario de Cumplimiento de Contratos</h2>
     <p className="text-sm"><strong>CEERTIFICACIÓN DE CONTRATISTA/PROVEEDOR</strong></p>
-    <ul classname="list-disc pl-6">
+    <ul className="list-disc pl-6">
       <li className="text-sm">Todas las regulaciones locales tanto a nivel social como ambiental.</li>
       <li className="text-sm">Todo lo solicitado en el Plan de Gestión Ambiental (o similar según cada país) y en el Sistema de Gestión de Sostenibilidad de Caribe Hospitality...</li>
       <li className="text-sm">Póliza para trabajadores...</li>
     </ul>
 
-    <h2 classname="text-sm font-semibold mt-4 mb-2">Acuerdo Entendimiento de Exoneraciones</h2>
+    <h2 className="text-sm font-semibold mt-4 mb-2">Acuerdo Entendimiento de Exoneraciones</h2>
     <p className="text-sm">Estimado proveedor,</p>
     <p className="text-sm">{companyDetails.nombre}, con cédula jurídica número {companyDetails.nit}, es la propietaria del proyecto hotelero denominado “{nombreProyectoUnico}”...</p>
-    <ul classname="list-disc pl-6 mb-2">
+    <ul className="list-disc pl-6 mb-2">
       <li className="text-sm">No debe tener ninguna perforación.</li>
       <li className="text-sm">Se debe presentar la factura original.</li>
       <li className="text-sm">La factura y cantidades deben ser legibles.</li>
@@ -263,7 +270,7 @@ export const OrderDetails = () => {
     </ul>
 
   </div>
-</section>
+</section> */}
 
 {/* Condiciones */}
 
@@ -272,7 +279,7 @@ export const OrderDetails = () => {
 
 
 
-<div>
+<div className="">
   <p className="my-2">
     <strong>Aprobado por:</strong>
   </p>
@@ -291,7 +298,7 @@ export const OrderDetails = () => {
       return (
         <div
           key={aprobador.rowPointer}
-          className="text-center align-middle justify-center my-auto border p-16 rounded shadow-md bg-gray-100"
+          className="text-center align-middle justify-center my-auto border p-16 rounded shadow-md bg-gray-50"
         >
           {/* Mostrar nombre completo o el usuario si no está en el mapeo */}
           <p className="font-bold">{nombres[aprobador.usuario] || aprobador.usuario}</p>
@@ -311,7 +318,7 @@ export const OrderDetails = () => {
     ) : (
       <>
         {/* Mostrar sello de no requiere firma de DG */}
-        <div className="text-center align-middle my-auto border p-16 rounded shadow-md bg-gray-100">
+        <div className="text-center align-middle my-auto border p-16 rounded shadow-md bg-gray-50">
           <p className="font-bold border-spacing-8 border-solid border-gray-900 border-2 text-gray-800">
             No requiere firma de Dirección General
           </p>
@@ -320,7 +327,7 @@ export const OrderDetails = () => {
     )}
 
     {/* Firma del proveedor */}
-    <div className="text-center border rounded shadow-md bg-gray-100">
+    <div className="text-center border rounded shadow-md bg-gray-50">
       <p className="pt-20">________________________</p>
       <p className="font-bold">Proveedor</p>
       <p className="text-sm text-gray-600">Firma</p>
